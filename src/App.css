@@ -3108,6 +3108,9 @@ textarea {
 .notification-panel { position: absolute; top: calc(100% + 14px); right: 0; z-index: 70; width: min(390px, calc(100vw - 28px)); overflow: hidden; border: 1px solid rgba(95, 227, 255, 0.2); border-radius: 20px; background: rgba(8, 14, 25, 0.97); box-shadow: 0 24px 70px rgba(2, 5, 9, 0.7), 0 0 30px rgba(95, 227, 255, 0.1); animation: notificationPanelIn 0.22s ease both; }
 .notification-panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 .notification-panel-header h3 { margin-top: 6px; font-size: 1.35rem; }
+.notification-panel-actions { display: flex; align-items: center; gap: 10px; }
+.notification-close { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid rgba(95, 227, 255, 0.24); border-radius: 9px; color: #ffffff; background: rgba(255, 255, 255, 0.06); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.notification-close:hover { border-color: rgba(95, 227, 255, 0.62); background: rgba(95, 227, 255, 0.12); }
 .notification-list { max-height: min(430px, calc(100vh - 160px)); overflow-y: auto; }
 .notification-item { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr) 8px; gap: 12px; width: 100%; padding: 15px 18px; border: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); color: #f4f6fb; background: transparent; text-align: left; cursor: pointer; transition: background 0.2s ease; }
 .notification-item:hover, .notification-item.unread { background: rgba(95, 227, 255, 0.07); }
