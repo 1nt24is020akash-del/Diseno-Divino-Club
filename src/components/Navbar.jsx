@@ -5,7 +5,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
   const renderNav = () => (
     <nav className="desktop-nav" aria-label="Main navigation">
       {navItems.map((item) => {
-        const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#my-activities'
+        const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#profile'
         const isActive = activeSection === item
         return (
           <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => onNavigate(item)}>
@@ -32,7 +32,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
           {notificationBell}
           {authUser && (
             <details className="profile-menu">
-              <summary aria-label="Open student profile"><span className="profile-avatar">{authUser.name?.[0]?.toUpperCase() || 'S'}</span><span className="profile-name">{authUser.name}</span></summary>
+              <summary aria-label="Open student profile" onClick={() => onNavigate('My Activities')}><span className="profile-avatar">{authUser.name?.[0]?.toUpperCase() || 'S'}</span><span className="profile-name">{authUser.name}</span></summary>
               <div className="profile-popover"><strong>{authUser.name}</strong><span>{authUser.email}</span><button type="button" className="text-button" onClick={onLogout}>Log out</button></div>
             </details>
           )}
@@ -49,7 +49,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
 
       <nav className="mobile-primary-nav" aria-label="Main navigation">
         {navItems.map((item) => {
-          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#my-activities'
+          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#profile'
           return <a key={item} href={href} className={activeSection === item ? 'active' : ''} onClick={() => onNavigate(item)}>{item}</a>
         })}
       </nav>

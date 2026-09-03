@@ -15,7 +15,7 @@ export default function Footer() {
           <a href="#home">Home</a>
           <a href="#explore">Explore</a>
           <a href="#about">About</a>
-          <a href="#my-activities">My Activities</a>
+          <a href="#profile">My Activities</a>
         </div>
         <div className="social-links" aria-label="Social links">
           <a href="#">Instagram</a>

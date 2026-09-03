@@ -18,6 +18,7 @@ import Leaderboard from './components/Leaderboard'
 import NotificationBell from './components/NotificationBell'
 import EventCountdown from './components/EventCountdown'
 import Certificates from './components/Certificates'
+import ProfileDashboard from './components/ProfileDashboard'
 import { activities, filterOptions } from './data/activities'
 import { hackathons } from './data/hackathons'
 import {
@@ -32,6 +33,7 @@ import {
 import { getAuthSession, signOut, updateAuthProfile } from './utils/authService'
 import { downloadAttendanceLetter } from './utils/attendanceLetter'
 import { getHackathonTeams, getPptSubmissions, getTeamForHackathon, getSubmissionForTeam, saveHackathonTeam, savePptSubmission } from './utils/hackathonStorage'
+import { buildLeaderboard } from './utils/leaderboard'
 
 const mappedCategories = {
   Workshops: 'Workshop',
@@ -414,7 +416,7 @@ function App() {
     if (title === 'Explore') sectionId = 'explore'
     if (title === 'About') sectionId = 'about'
     if (title === 'Leaderboard') sectionId = 'leaderboard'
-    if (title === 'My Activities') sectionId = 'my-activities'
+    if (title === 'My Activities') sectionId = 'profile'
     if (title === 'My Certificates') sectionId = 'my-certificates'
 
     const section = document.getElementById(sectionId)
@@ -427,6 +429,8 @@ function App() {
     setMobileMenuOpen(false)
     document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  const handleOpenActivities = () => document.getElementById('my-activities')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   const showToast = (message) => setToast(message)
 
@@ -446,6 +450,11 @@ function App() {
 
   const certificateRecords = useMemo(
     () => authSession?.user ? registrationRecords.filter((record) => record.userId === authSession.user.id && record.attendanceStatus === 'Checked In').map((record) => ({ ...record, activity: allActivities.find((activity) => activity.id === record.eventId), id: `certificate-${record.registrationId}`, issueDate: record.checkedInAt || record.registeredAt, studentName: record.studentName || authSession.user.name })) .filter((certificate) => certificate.activity) : [],
+    [allActivities, authSession, registrationRecords],
+  )
+
+  const profileStudent = useMemo(
+    () => buildLeaderboard(registrationRecords, allActivities, authSession?.user?.id).currentStudent,
     [allActivities, authSession, registrationRecords],
   )
 
@@ -820,6 +829,20 @@ function App() {
         </section>
 
         <Leaderboard records={registrationRecords} activities={allActivities} currentUserId={authSession?.user?.id} />
+
+        <ProfileDashboard
+          user={authSession?.user}
+          records={registrationRecords}
+          activities={allActivities}
+          certificates={certificateRecords}
+          leaderboardStudent={profileStudent}
+          onEditProfile={() => showToast('Complete your academic details while registering for an event.')}
+          onOpenEvent={setSelectedActivity}
+          onViewCertificate={() => handleNavigate('My Certificates')}
+          onViewAllCertificates={() => handleNavigate('My Certificates')}
+          onOpenActivities={handleOpenActivities}
+          onExplore={() => handleNavigate('Explore')}
+        />
 
         <section id="my-activities" className="dashboard-section section-shell">
           <div className="container">
