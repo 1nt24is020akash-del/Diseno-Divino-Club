@@ -315,6 +315,21 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (currentPath !== '/') return undefined
+    const sectionNames = [['home', 'Home'], ['explore', 'Explore'], ['about', 'About'], ['leaderboard', 'Leaderboard'], ['my-activities', 'My Activities']]
+    const sections = sectionNames.map(([id, name]) => ({ element: document.getElementById(id), name })).filter((section) => section.element)
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((first, second) => second.intersectionRatio - first.intersectionRatio)[0]
+      if (visible) {
+        const section = sections.find((item) => item.element === visible.target)
+        if (section) setActiveSection(section.name)
+      }
+    }, { rootMargin: '-18% 0px -62% 0px', threshold: [0, 0.1, 0.25, 0.5] })
+    sections.forEach((section) => observer.observe(section.element))
+    return () => observer.disconnect()
+  }, [currentPath])
+
+  useEffect(() => {
     if (!toast) return undefined
     const timeout = window.setTimeout(() => setToast(''), 2600)
     return () => window.clearTimeout(timeout)
