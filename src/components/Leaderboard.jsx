@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { BADGES, buildLeaderboard } from '../utils/leaderboard'
+import { useEffect, useRef, useState } from 'react'
+import { BADGES } from '../utils/leaderboard'
 
 function CountUp({ value }) {
   const [count, setCount] = useState(0)
@@ -62,9 +62,9 @@ function XpBar({ xp }) {
   return <div className="xp-bar" ref={barRef} aria-label={`${xp} XP progress`}><span style={{ width: hasEntered ? `${Math.min((xp / 1250) * 100, 100)}%` : '0%' }} /></div>
 }
 
-export default function Leaderboard({ records, activities, currentUserId }) {
-  const { students, currentStudent } = useMemo(() => buildLeaderboard(records, activities, currentUserId), [records, activities, currentUserId])
-  const visibleStudents = students.length > 0 ? students.slice(0, 5) : featuredStudents
+export default function Leaderboard() {
+  const currentStudent = null
+  const visibleStudents = featuredStudents
   const podium = visibleStudents.slice(0, 3)
   const stats = [[35, 'Events Conducted'], [500, 'Student Registrations'], [100, 'Active Members'], [50, 'Challenges Completed']]
 
