@@ -15,6 +15,9 @@ import TeamRegistrationModal from './components/TeamRegistrationModal'
 import PptSubmissionModal from './components/PptSubmissionModal'
 import DigitalEventPass from './components/DigitalEventPass'
 import Leaderboard from './components/Leaderboard'
+import NotificationBell from './components/NotificationBell'
+import EventCountdown from './components/EventCountdown'
+import Certificates from './components/Certificates'
 import { activities, filterOptions } from './data/activities'
 import { hackathons } from './data/hackathons'
 import {
@@ -412,6 +415,7 @@ function App() {
     if (title === 'About') sectionId = 'about'
     if (title === 'Leaderboard') sectionId = 'leaderboard'
     if (title === 'My Activities') sectionId = 'my-activities'
+    if (title === 'My Certificates') sectionId = 'my-certificates'
 
     const section = document.getElementById(sectionId)
     if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -438,6 +442,32 @@ function App() {
       return
     }
     setRegistrationDetailsActivity(activity)
+  }
+
+  const certificateRecords = useMemo(
+    () => authSession?.user ? registrationRecords.filter((record) => record.userId === authSession.user.id && record.attendanceStatus === 'Checked In').map((record) => ({ ...record, activity: allActivities.find((activity) => activity.id === record.eventId), id: `certificate-${record.registrationId}`, issueDate: record.checkedInAt || record.registeredAt, studentName: record.studentName || authSession.user.name })) .filter((certificate) => certificate.activity) : [],
+    [allActivities, authSession, registrationRecords],
+  )
+
+  const notifications = useMemo(() => {
+    if (!authSession?.user) return []
+    const nextNotifications = []
+    const userRecords = registrationRecords.filter((record) => record.userId === authSession.user.id)
+    userRecords.forEach((record) => {
+      const activity = allActivities.find((item) => item.id === record.eventId)
+      if (!activity) return
+      if (record.attendanceStatus === 'Checked In') nextNotifications.push({ id: `certificate-${record.registrationId}`, icon: '🏆', title: `Your certificate for ${activity.title} is ready!`, message: 'View or download your participation certificate.', time: 'Just now', activity })
+      else nextNotifications.push({ id: `registered-${record.registrationId}`, icon: '📅', title: `${activity.title} is on your calendar`, message: `${new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${activity.time}`, time: 'Registration confirmed', activity })
+    })
+    hackathons.filter((hackathon) => hackathon.registeredCount < hackathon.capacity).slice(0, 2).forEach((hackathon) => nextNotifications.push({ id: `seats-${hackathon.id}`, icon: '🔥', title: `${hackathon.title}: ${hackathon.capacity - hackathon.registeredCount} seats remaining`, message: 'Explore the team registration details before it fills up.', time: 'Upcoming', activity: hackathon }))
+    const upcoming = allActivities.filter((activity) => new Date(`${activity.date}T00:00:00`) >= new Date()).sort((first, second) => first.date.localeCompare(second.date))[0]
+    if (upcoming && !userRecords.some((record) => record.eventId === upcoming.id)) nextNotifications.push({ id: `upcoming-${upcoming.id}`, icon: '🚀', title: `${upcoming.title} is coming up`, message: `${new Date(upcoming.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · Save your spot.`, time: 'Upcoming', activity: upcoming })
+    return nextNotifications
+  }, [allActivities, authSession, registrationRecords])
+
+  const handleNotificationSelect = (notification) => {
+    if (notification.activity) setSelectedActivity(notification.activity)
+    if (notification.id.startsWith('certificate-')) handleNavigate('My Certificates')
   }
 
   const handleAuthenticated = (user) => {
@@ -544,6 +574,7 @@ function App() {
         isMobileMenuOpen={mobileMenuOpen}
         authUser={authSession?.user}
         onLogout={handleLogout}
+        notificationBell={<NotificationBell key={authSession?.user?.id || 'guest'} notifications={notifications} userId={authSession?.user?.id} onSelect={handleNotificationSelect} />}
       />
 
       <main>
@@ -900,6 +931,8 @@ function App() {
           </div>
         </section>
 
+        <Certificates certificates={certificateRecords} onExplore={() => handleNavigate('Explore')} />
+
         <section className="cta-section section-shell">
           <div className="container cta-box">
             <div>
@@ -945,7 +978,7 @@ function App() {
               <h3 id="details-title">{selectedActivity.title}</h3>
               <p className="detail-description">{selectedActivity.fullDescription}</p>
 
-              {selectedActivity.isHackathon && <div className="hackathon-detail-block"><strong>Theme</strong><p>{selectedActivity.theme}</p><strong>Eligibility</strong><p>{selectedActivity.eligibility}</p><strong>Prizes</strong><p>{selectedActivity.prizes}</p><strong>Round Structure</strong>{selectedActivity.rounds.map((round) => <span key={round}>{round}</span>)}</div>}
+              {selectedActivity.isHackathon && <><EventCountdown activity={selectedActivity} /><div className="hackathon-detail-block"><strong>Theme</strong><p>{selectedActivity.theme}</p><strong>Eligibility</strong><p>{selectedActivity.eligibility}</p><strong>Prizes</strong><p>{selectedActivity.prizes}</p><strong>Round Structure</strong>{selectedActivity.rounds.map((round) => <span key={round}>{round}</span>)}</div></>}
 
               <div className="detail-meta-grid">
                 <div><span>Date</span><strong>{new Date(selectedActivity.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong></div>

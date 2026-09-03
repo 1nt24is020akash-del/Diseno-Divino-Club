@@ -43,6 +43,7 @@ export const persistRegistration = (activityId, user, details = {}) => {
       collegeName: details.collegeName || user?.collegeName || '',
       usn: details.usn || user?.usn || '',
       branch: details.branch || user?.branch || '',
+      phone: details.phone || user?.phone || '',
       registeredAt: new Date().toISOString(),
       status: 'confirmed',
       attendanceStatus: 'Not Checked In',

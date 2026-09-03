@@ -1,11 +1,11 @@
-const navItems = ['Home', 'Explore', 'About', 'Leaderboard', 'My Activities']
+const navItems = ['Home', 'Explore', 'About', 'Leaderboard', 'My Activities', 'My Certificates']
 const activityItems = ['Workshops', 'Events', 'Competitions', 'Upcoming']
 
-export default function Navbar({ onNavigate, onActivityFilter, activeSection, activeFilter, onOpenMenu, isMobileMenuOpen, authUser, onLogout }) {
+export default function Navbar({ onNavigate, onActivityFilter, activeSection, activeFilter, onOpenMenu, isMobileMenuOpen, authUser, onLogout, notificationBell }) {
   const renderNav = () => (
     <nav className="desktop-nav" aria-label="Main navigation">
       {navItems.map((item) => {
-        const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : '#my-activities'
+        const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#my-activities'
         const isActive = activeSection === item
         return (
           <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => onNavigate(item)}>
@@ -29,6 +29,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
         {renderNav()}
 
         <div className="header-actions">
+          {notificationBell}
           {authUser && (
             <details className="profile-menu">
               <summary aria-label="Open student profile"><span className="profile-avatar">{authUser.name?.[0]?.toUpperCase() || 'S'}</span><span className="profile-name">{authUser.name}</span></summary>
@@ -48,7 +49,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
 
       <nav className="mobile-primary-nav" aria-label="Main navigation">
         {navItems.map((item) => {
-          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : '#my-activities'
+          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '#my-certificates' : '#my-activities'
           return <a key={item} href={href} className={activeSection === item ? 'active' : ''} onClick={() => onNavigate(item)}>{item}</a>
         })}
       </nav>

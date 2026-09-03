@@ -3100,6 +3100,73 @@ textarea {
   }
 }
 
+.notification-menu { position: relative; }
+.notification-trigger { position: relative; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid rgba(95, 227, 255, 0.18); border-radius: 50%; color: #eaffff; background: rgba(8, 14, 25, 0.76); cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease; }
+.notification-trigger:hover, .notification-trigger[aria-expanded="true"] { border-color: rgba(95, 227, 255, 0.6); transform: translateY(-2px); }
+.notification-trigger > span { font-size: 1rem; }
+.notification-count { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; display: grid; place-items: center; border: 2px solid #070a10; border-radius: 999px; color: #06131a; background: #9df6ff; font-size: 0.62rem; }
+.notification-panel { position: absolute; top: calc(100% + 14px); right: 0; z-index: 70; width: min(390px, calc(100vw - 28px)); overflow: hidden; border: 1px solid rgba(95, 227, 255, 0.2); border-radius: 20px; background: rgba(8, 14, 25, 0.97); box-shadow: 0 24px 70px rgba(2, 5, 9, 0.7), 0 0 30px rgba(95, 227, 255, 0.1); animation: notificationPanelIn 0.22s ease both; }
+.notification-panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.notification-panel-header h3 { margin-top: 6px; font-size: 1.35rem; }
+.notification-list { max-height: min(430px, calc(100vh - 160px)); overflow-y: auto; }
+.notification-item { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr) 8px; gap: 12px; width: 100%; padding: 15px 18px; border: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); color: #f4f6fb; background: transparent; text-align: left; cursor: pointer; transition: background 0.2s ease; }
+.notification-item:hover, .notification-item.unread { background: rgba(95, 227, 255, 0.07); }
+.notification-icon { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(95, 227, 255, 0.18); border-radius: 11px; background: rgba(95, 227, 255, 0.08); }
+.notification-copy { display: grid; gap: 4px; min-width: 0; }
+.notification-copy strong { font-size: 0.82rem; line-height: 1.35; }
+.notification-copy span, .notification-copy small { color: rgba(244, 246, 251, 0.58); font-size: 0.72rem; line-height: 1.4; }
+.notification-dot { align-self: start; width: 7px; height: 7px; margin-top: 6px; border-radius: 50%; background: #9df6ff; box-shadow: 0 0 12px #9df6ff; }
+.notification-empty { padding: 28px 18px; color: rgba(244, 246, 251, 0.58); text-align: center; }
+@keyframes notificationPanelIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.event-countdown { margin: 20px 0; padding: 16px; border: 1px solid rgba(95, 227, 255, 0.2); border-radius: 16px; background: linear-gradient(135deg, rgba(95, 227, 255, 0.09), rgba(168, 85, 247, 0.09)); }
+.countdown-kicker { color: #9df6ff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; }
+.countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.countdown-unit { display: grid; justify-items: center; gap: 3px; padding: 10px 4px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; background: rgba(5, 8, 14, 0.42); }
+.countdown-unit strong { color: #ffffff; font-size: clamp(1.35rem, 4vw, 2rem); line-height: 1; }
+.countdown-unit span { color: rgba(244, 246, 251, 0.54); font-size: 0.56rem; letter-spacing: 0.08em; }
+.countdown-status { margin: 20px 0; padding: 16px; border: 1px solid rgba(95, 227, 255, 0.24); border-radius: 16px; color: #9df6ff; background: rgba(95, 227, 255, 0.08); font-weight: 700; letter-spacing: 0.08em; text-align: center; }
+.countdown-status.complete { color: rgba(244, 246, 251, 0.62); border-color: rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.04); }
+
+.certificates-section { background: rgba(5, 8, 14, 0.2); }
+.certificates-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.certificate-card { overflow: hidden; border: 1px solid rgba(95, 227, 255, 0.16); border-radius: 20px; background: rgba(8, 14, 25, 0.82); transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+.certificate-card:hover { transform: translateY(-5px); border-color: rgba(95, 227, 255, 0.48); box-shadow: 0 18px 45px rgba(2, 5, 9, 0.38); }
+.certificate-card > img { width: 100%; height: 150px; object-fit: cover; }
+.certificate-card-body { display: grid; gap: 10px; padding: 18px; }
+.certificate-card-body h3 { font-size: 1.25rem; line-height: 1.15; }
+.certificate-card-body > span:not(.certificate-badge) { color: rgba(244, 246, 251, 0.58); font-size: 0.8rem; }
+.certificate-card-body p { margin: 0; color: rgba(244, 246, 251, 0.64); font-size: 0.75rem; line-height: 1.7; }
+.certificate-badge { width: fit-content; padding: 6px 9px; border: 1px solid rgba(250, 204, 21, 0.28); border-radius: 999px; color: #fde68a; background: rgba(250, 204, 21, 0.08); font-size: 0.65rem; font-weight: 700; }
+.certificate-card-actions, .certificate-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.certificates-empty { text-align: center; }
+.certificate-empty-icon { font-size: 2.4rem; }
+.certificate-modal { position: relative; width: min(980px, calc(100vw - 28px)); max-height: calc(100vh - 32px); overflow: auto; padding: 22px; border: 1px solid rgba(95, 227, 255, 0.24); border-radius: 22px; background: rgba(8, 14, 25, 0.98); box-shadow: 0 30px 90px rgba(2, 5, 9, 0.72); }
+.certificate-paper { min-height: 500px; display: grid; place-items: center; align-content: center; gap: 14px; padding: 48px 54px 34px; border: 2px solid rgba(95, 227, 255, 0.58); background: radial-gradient(circle at 50% 0%, rgba(95, 227, 255, 0.12), transparent 42%), #0b1421; text-align: center; }
+.certificate-kicker { color: #9df6ff; font-size: 0.68rem; letter-spacing: 0.12em; }
+.certificate-seal { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #facc15; border-radius: 50%; color: #facc15; font-size: 1.4rem; }
+.certificate-paper h2 { color: #ffffff; font-size: clamp(1.5rem, 4vw, 2.4rem); }
+.certificate-paper h3 { color: #9df6ff; font-size: clamp(1.6rem, 4vw, 2.7rem); }
+.certificate-paper p { margin: 0; color: rgba(244, 246, 251, 0.68); }
+.certificate-event { color: #ffffff; font-size: 1.2rem; }
+.certificate-footer { display: flex; align-items: end; justify-content: space-between; width: 100%; margin-top: 22px; color: rgba(244, 246, 251, 0.62); font-size: 0.72rem; }
+.certificate-footer span { display: grid; gap: 5px; }
+.certificate-footer small { color: rgba(244, 246, 251, 0.42); }
+.certificate-footer img { width: 60px; height: 60px; }
+
+@media (max-width: 900px) {
+  .certificates-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .notification-panel { position: fixed; top: 72px; right: 14px; left: 14px; width: auto; }
+  .certificates-grid { grid-template-columns: 1fr; }
+  .certificate-modal { padding: 12px; }
+  .certificate-paper { min-height: 440px; padding: 32px 18px 24px; }
+  .certificate-footer { align-items: center; gap: 10px; }
+  .certificate-footer span { font-size: 0.62rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
