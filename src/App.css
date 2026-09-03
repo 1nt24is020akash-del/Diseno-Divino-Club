@@ -1887,6 +1887,20 @@ body {
   margin-bottom: 16px;
 }
 
+.activity-detail-card > .close-button {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(95, 227, 255, 0.28);
+  color: #ffffff;
+  background: rgba(7, 14, 27, 0.92);
+  box-shadow: 0 8px 20px rgba(2, 5, 9, 0.4);
+  line-height: 1;
+}
+
+.activity-detail-card .detail-head {
+  padding-right: 52px;
+}
+
 .detail-content h3 {
   margin: 0;
   font-size: clamp(2rem, 3vw, 3rem);
