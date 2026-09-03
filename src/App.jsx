@@ -953,7 +953,7 @@ function App() {
                 <div><span>Location</span><strong>{selectedActivity.location}</strong></div>
                 <div><span>Duration</span><strong>{selectedActivity.duration}</strong></div>
                 <div><span>Organizer</span><strong>{selectedActivity.organizer}</strong></div>
-                <div><span>Seats</span><strong>{Math.max(selectedActivity.capacity - selectedActivity.registeredCount, 0)} left</strong></div>
+                <div><span>Seats</span><strong>{Math.max(selectedActivity.capacity - getDisplayedRegisteredCount(selectedActivity), 0)} left</strong></div>
               </div>
 
               <div className="detail-sections">

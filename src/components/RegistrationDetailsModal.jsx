@@ -7,6 +7,7 @@ export default function RegistrationDetailsModal({ activity, user, initialDetail
     collegeName: initialDetails?.collegeName || user.collegeName || '',
     usn: initialDetails?.usn || user.usn || '',
     branch: initialDetails?.branch || user.branch || '',
+    phone: initialDetails?.phone || user.phone || '',
   })
   const [errors, setErrors] = useState({})
 
@@ -22,6 +23,7 @@ export default function RegistrationDetailsModal({ activity, user, initialDetail
     if (!form.collegeName.trim()) nextErrors.collegeName = 'Enter your college name.'
     if (!/^[A-Z0-9][A-Z0-9/-]{3,19}$/.test(form.usn)) nextErrors.usn = 'Enter a valid USN using 4-20 letters, numbers, /, or -.'
     if (!form.branch) nextErrors.branch = 'Choose your branch.'
+    if (!/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,}$/.test(form.phone.trim())) nextErrors.phone = 'Enter a valid phone number.'
     setErrors(nextErrors)
     if (!Object.keys(nextErrors).length) onContinue({ ...form, collegeName: form.collegeName.trim() })
   }
@@ -40,6 +42,8 @@ export default function RegistrationDetailsModal({ activity, user, initialDetail
           {errors.usn && <p className="auth-error">{errors.usn}</p>}
           <label><span>Branch *</span><BranchSelect value={form.branch} onChange={(value) => { setForm((current) => ({ ...current, branch: value })); setErrors((current) => ({ ...current, branch: '' })) }} hasError={Boolean(errors.branch)} /></label>
           {errors.branch && <p className="auth-error">{errors.branch}</p>}
+          <label><span>Phone Number *</span><input type="tel" name="phone" value={form.phone} onChange={update} placeholder="Enter your phone number" autoComplete="tel" /></label>
+          {errors.phone && <p className="auth-error">{errors.phone}</p>}
           <div className="form-actions modal-actions">
             <button type="button" className="secondary-button" onClick={onClose}>Back</button>
             <button type="submit" className="primary-button">Review Registration</button>

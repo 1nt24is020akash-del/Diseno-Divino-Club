@@ -4,6 +4,7 @@ import CapacityMeter from './CapacityMeter'
 export default function ActivityCard({ activity, registeredCount, onViewDetails, onToggleInterest, onRegister, isInterested, isRegistered }) {
   const currentRegisteredCount = registeredCount ?? activity.registeredCount
   const status = getActivityStatus({ ...activity, registeredCount: currentRegisteredCount })
+  const openDetails = () => onViewDetails(activity)
 
   const handleTilt = (event) => {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -22,6 +23,7 @@ export default function ActivityCard({ activity, registeredCount, onViewDetails,
     <article
       className="activity-card"
       aria-label={activity.title}
+      onClick={openDetails}
       onMouseMove={handleTilt}
       onMouseLeave={resetTilt}
     >
@@ -48,11 +50,11 @@ export default function ActivityCard({ activity, registeredCount, onViewDetails,
         <CapacityMeter capacity={activity.capacity} registeredCount={registeredCount} />
         <div className="card-footer">
           <div className="card-actions">
-            <button type="button" className="text-button" onClick={() => onToggleInterest(activity.id)}>
+            <button type="button" className="text-button" onClick={(event) => { event.stopPropagation(); onToggleInterest(activity.id) }}>
               {isInterested ? 'Interested ✓' : 'Interested'}
             </button>
-            {activity.isHackathon && <button type="button" className="secondary-button small" onClick={() => onRegister(activity)}>{isRegistered ? 'Registered Team' : 'Register Team'}</button>}
-            <button type="button" className="primary-button small" onClick={() => onViewDetails(activity)}>
+            {activity.isHackathon && <button type="button" className="secondary-button small" onClick={(event) => { event.stopPropagation(); onRegister(activity) }}>{isRegistered ? 'Registered Team' : 'Register Team'}</button>}
+            <button type="button" className="primary-button small" onClick={(event) => { event.stopPropagation(); openDetails() }}>
               {isRegistered ? 'View Details' : 'View Details'}
             </button>
           </div>
