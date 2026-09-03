@@ -271,6 +271,7 @@ function GalleryCard({ event, index }) {
 
 function App() {
   const allActivities = useMemo(() => [...activities, ...hackathons], [])
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname)
   const [activeSection, setActiveSection] = useState('Home')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('All')
@@ -306,6 +307,12 @@ function App() {
   useEffect(() => {
     localStorage.setItem('diseno-divino-interests', JSON.stringify(interestedIds))
   }, [interestedIds])
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname)
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   useEffect(() => {
     if (!toast) return undefined
@@ -412,6 +419,19 @@ function App() {
     setActiveSection(title)
     setMobileMenuOpen(false)
 
+    if (title === 'My Profile' || title === 'My Activities') {
+      window.history.pushState({}, '', '/profile')
+      setCurrentPath('/profile')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    if (title === 'My Certificates') {
+      window.history.pushState({}, '', '/certificates')
+      setCurrentPath('/certificates')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
     let sectionId = 'home'
     if (title === 'Explore') sectionId = 'explore'
     if (title === 'About') sectionId = 'about'
@@ -511,6 +531,10 @@ function App() {
   const handleLogout = () => {
     signOut()
     setAuthSession(null)
+    window.history.pushState({}, '', '/')
+    setCurrentPath('/')
+    setActiveSection('Home')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDownloadLetter = async (activity, details = authSession?.user) => {
@@ -587,6 +611,23 @@ function App() {
       />
 
       <main>
+        {currentPath === '/profile' ? (
+          <ProfileDashboard
+            user={authSession?.user}
+            records={registrationRecords}
+            activities={allActivities}
+            certificates={certificateRecords}
+            leaderboardStudent={profileStudent}
+            onEditProfile={() => showToast('Complete your academic details while registering for an event.')}
+            onOpenEvent={setSelectedActivity}
+            onViewCertificate={() => handleNavigate('My Certificates')}
+            onViewAllCertificates={() => handleNavigate('My Certificates')}
+            onOpenActivities={handleOpenActivities}
+            onExplore={() => handleNavigate('Explore')}
+          />
+        ) : currentPath === '/certificates' ? (
+          <Certificates certificates={certificateRecords} user={authSession?.user} onExplore={() => handleNavigate('Explore')} />
+        ) : <>
         <section id="home" className="hero-section section-shell">
           <div className="container hero-grid">
             <div className="hero-copy">
@@ -830,20 +871,6 @@ function App() {
 
         <Leaderboard records={registrationRecords} activities={allActivities} currentUserId={authSession?.user?.id} />
 
-        <ProfileDashboard
-          user={authSession?.user}
-          records={registrationRecords}
-          activities={allActivities}
-          certificates={certificateRecords}
-          leaderboardStudent={profileStudent}
-          onEditProfile={() => showToast('Complete your academic details while registering for an event.')}
-          onOpenEvent={setSelectedActivity}
-          onViewCertificate={() => handleNavigate('My Certificates')}
-          onViewAllCertificates={() => handleNavigate('My Certificates')}
-          onOpenActivities={handleOpenActivities}
-          onExplore={() => handleNavigate('Explore')}
-        />
-
         <section id="my-activities" className="dashboard-section section-shell">
           <div className="container">
             <div className="section-header">
@@ -954,8 +981,6 @@ function App() {
           </div>
         </section>
 
-        <Certificates certificates={certificateRecords} onExplore={() => handleNavigate('Explore')} />
-
         <section className="cta-section section-shell">
           <div className="container cta-box">
             <div>
@@ -967,6 +992,7 @@ function App() {
             </button>
           </div>
         </section>
+        </>}
       </main>
 
       <Footer />
