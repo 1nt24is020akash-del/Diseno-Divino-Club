@@ -440,6 +440,12 @@ function App() {
     if (title === 'My Certificates') sectionId = 'my-certificates'
 
     const section = document.getElementById(sectionId)
+    if (currentPath !== '/') {
+      window.history.pushState({}, '', sectionId === 'home' ? '/' : `/#${sectionId}`)
+      setCurrentPath('/')
+      window.setTimeout(() => document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+      return
+    }
     if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 

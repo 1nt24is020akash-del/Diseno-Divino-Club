@@ -18,7 +18,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
   const renderNav = () => (
     <nav className="desktop-nav" aria-label="Main navigation">
       {navItems.map((item) => {
-        const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
+        const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
         const isActive = activeSection === item
         return (
           <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => onNavigate(item)}>
@@ -32,7 +32,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <a href="#home" className="brand" onClick={() => onNavigate('Home')} aria-label="Diseño Divino home">
+        <a href="/" className="brand" onClick={() => onNavigate('Home')} aria-label="Diseño Divino home">
           <span className="brand-lockup" aria-label="Diseño Divino">
             <span className="brand-first">Diseño</span>
             <span className="brand-second">Divino</span>
@@ -62,7 +62,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
 
       <nav className="mobile-primary-nav" aria-label="Main navigation">
         {navItems.map((item) => {
-          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
+          const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
           return <a key={item} href={href} className={activeSection === item ? 'active' : ''} onClick={() => onNavigate(item)}>{item}</a>
         })}
       </nav>

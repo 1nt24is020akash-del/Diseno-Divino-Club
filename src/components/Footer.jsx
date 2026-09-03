@@ -12,7 +12,7 @@ export default function Footer() {
           <p>Creative experiences for curious students.</p>
         </div>
         <div className="footer-links">
-          <a href="#home">Home</a>
+          <a href="/">Home</a>
           <a href="#explore">Explore</a>
           <a href="#about">About</a>
           <a href="/profile">My Activities</a>
