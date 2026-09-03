@@ -18,7 +18,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
   const renderNav = () => (
     <nav className="desktop-nav" aria-label="Main navigation">
       {navItems.map((item) => {
-        const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
+        const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '#my-activities'
         const isActive = activeSection === item
         return (
           <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => onNavigate(item)}>
@@ -62,7 +62,7 @@ export default function Navbar({ onNavigate, onActivityFilter, activeSection, ac
 
       <nav className="mobile-primary-nav" aria-label="Main navigation">
         {navItems.map((item) => {
-          const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '/profile'
+          const href = item === 'Home' ? '/' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : item === 'My Certificates' ? '/certificates' : '#my-activities'
           return <a key={item} href={href} className={activeSection === item ? 'active' : ''} onClick={() => onNavigate(item)}>{item}</a>
         })}
       </nav>

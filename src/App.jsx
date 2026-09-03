@@ -419,7 +419,7 @@ function App() {
     setActiveSection(title)
     setMobileMenuOpen(false)
 
-    if (title === 'My Profile' || title === 'My Activities') {
+    if (title === 'My Profile') {
       window.history.pushState({}, '', '/profile')
       setCurrentPath('/profile')
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -436,7 +436,7 @@ function App() {
     if (title === 'Explore') sectionId = 'explore'
     if (title === 'About') sectionId = 'about'
     if (title === 'Leaderboard') sectionId = 'leaderboard'
-    if (title === 'My Activities') sectionId = 'profile'
+    if (title === 'My Activities') sectionId = 'my-activities'
     if (title === 'My Certificates') sectionId = 'my-certificates'
 
     const section = document.getElementById(sectionId)
