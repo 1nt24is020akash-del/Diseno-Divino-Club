@@ -1,16 +1,14 @@
 const navItems = ['Home', 'Explore', 'About', 'Leaderboard', 'My Activities']
+const activityItems = ['Workshops', 'Events', 'Competitions', 'Upcoming']
 
-export default function Navbar({ onNavigate, activeSection, onOpenMenu, isMobileMenuOpen, authUser, onLogout }) {
-  const renderNav = (mobile = false) => (
-    <nav className={mobile ? 'mobile-nav' : 'desktop-nav'} aria-label="Main navigation">
+export default function Navbar({ onNavigate, onActivityFilter, activeSection, activeFilter, onOpenMenu, isMobileMenuOpen, authUser, onLogout }) {
+  const renderNav = () => (
+    <nav className="desktop-nav" aria-label="Main navigation">
       {navItems.map((item) => {
         const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : '#my-activities'
         const isActive = activeSection === item
         return (
-          <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => {
-            onNavigate(item)
-            if (mobile) onOpenMenu(false)
-          }}>
+          <a key={item} href={href} className={isActive ? 'nav-link active' : 'nav-link'} onClick={() => onNavigate(item)}>
             {item}
           </a>
         )
@@ -28,7 +26,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenMenu, isMobile
           </span>
         </a>
 
-        {renderNav(false)}
+        {renderNav()}
 
         <div className="header-actions">
           {authUser && (
@@ -40,7 +38,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenMenu, isMobile
           <button type="button" className="ghost-button" onClick={() => onNavigate('Explore')}>
             Explore Events
           </button>
-          <button type="button" className="menu-toggle" aria-label="Toggle menu" onClick={() => onOpenMenu(!isMobileMenuOpen)}>
+          <button type="button" className="menu-toggle" aria-label="Toggle menu" aria-expanded={isMobileMenuOpen} onClick={() => onOpenMenu(!isMobileMenuOpen)}>
             <span />
             <span />
             <span />
@@ -48,10 +46,21 @@ export default function Navbar({ onNavigate, activeSection, onOpenMenu, isMobile
         </div>
       </div>
 
+      <nav className="mobile-primary-nav" aria-label="Main navigation">
+        {navItems.map((item) => {
+          const href = item === 'Home' ? '#' : item === 'Explore' ? '#explore' : item === 'About' ? '#about' : item === 'Leaderboard' ? '#leaderboard' : '#my-activities'
+          return <a key={item} href={href} className={activeSection === item ? 'active' : ''} onClick={() => onNavigate(item)}>{item}</a>
+        })}
+      </nav>
+
       {isMobileMenuOpen && (
-        <div className="mobile-menu-wrap">
-          <div className="container">
-            {renderNav(true)}
+        <div className="mobile-menu-layer">
+          <button type="button" className="mobile-menu-backdrop" aria-label="Close activity menu" onClick={() => onOpenMenu(false)} />
+          <div className="mobile-menu-wrap">
+            <div className="mobile-menu-heading"><span>Browse activities</span><button type="button" aria-label="Close activity menu" onClick={() => onOpenMenu(false)}>×</button></div>
+            <nav className="mobile-activity-nav" aria-label="Activity navigation">
+              {activityItems.map((item) => <a key={item} href="#explore" className={activeFilter === item ? 'active' : ''} onClick={() => onActivityFilter(item)}>{item}<span aria-hidden="true">↗</span></a>)}
+            </nav>
           </div>
         </div>
       )}

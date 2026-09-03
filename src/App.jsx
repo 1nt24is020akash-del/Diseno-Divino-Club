@@ -417,6 +417,13 @@ function App() {
     if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const handleActivityFilter = (filter) => {
+    setSelectedFilter(filter)
+    setActiveSection('Explore')
+    setMobileMenuOpen(false)
+    document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const showToast = (message) => setToast(message)
 
   const handleToggleInterest = (activityId) => {
@@ -530,7 +537,9 @@ function App() {
       <BackgroundScene />
       <Navbar
         onNavigate={handleNavigate}
+        onActivityFilter={handleActivityFilter}
         activeSection={activeSection}
+        activeFilter={selectedFilter}
         onOpenMenu={setMobileMenuOpen}
         isMobileMenuOpen={mobileMenuOpen}
         authUser={authSession?.user}

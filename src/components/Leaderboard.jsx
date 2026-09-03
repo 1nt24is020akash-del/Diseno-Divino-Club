@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BADGES, buildLeaderboard } from '../utils/leaderboard'
 
-const tabs = [
-  ['Overall', 'all'], ['This Month', 'month'], ['This Week', 'week'], ['Creative', 'creative'], ['Technical', 'technical'], ['Hackathons', 'hackathons'],
-]
-
 function CountUp({ value }) {
   const [count, setCount] = useState(0)
   const ref = useRef(null)
@@ -30,19 +26,45 @@ function CountUp({ value }) {
 
 const initials = (name) => name.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()
 
+const featuredStudents = [
+  { id: 'featured-1', name: 'Akash', branch: 'Computer Science & Engineering', collegeName: 'Nitte Meenakshi Institute of Technology', xp: 1250, events: 12, wins: 4, achievement: 'Hackathon Champion', achievementIcon: '🏆', prizePool: '₹50,000', wonPoints: 1250, detail: 'Led the winning hackathon team with a campus accessibility platform.', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=85' },
+  { id: 'featured-2', name: 'Vikas Patel K R', branch: 'Information Science & Engineering', collegeName: 'Nitte Meenakshi Institute of Technology', xp: 1080, events: 10, wins: 3, achievement: 'Top Innovator', achievementIcon: '💡', prizePool: '₹30,000', wonPoints: 1080, detail: 'Designed an intelligent event discovery system for student communities.', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=85' },
+  { id: 'featured-3', name: 'Naveen', branch: 'Communication Design', collegeName: 'Nitte Meenakshi Institute of Technology', xp: 950, events: 9, wins: 2, achievement: 'Creative Star', achievementIcon: '🎨', prizePool: '₹20,000', wonPoints: 950, detail: 'Shaped the visual identity for the annual student creative showcase.', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=240&q=85' },
+  { id: 'featured-4', name: 'Rahul', branch: 'Electronics & Communication', collegeName: 'Nitte Meenakshi Institute of Technology', xp: 820, events: 8, wins: 1, achievement: 'Active Member', achievementIcon: '🔥', prizePool: '₹10,000', wonPoints: 820, detail: 'A consistent contributor across workshops, events, and team activities.', image: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=240&q=85' },
+  { id: 'featured-5', name: 'Priya', branch: 'Artificial Intelligence & ML', collegeName: 'Nitte Meenakshi Institute of Technology', xp: 760, events: 7, wins: 1, achievement: 'Rising Star', achievementIcon: '⭐', prizePool: '₹5,000', wonPoints: 760, detail: 'Made a strong first-season debut with a thoughtful machine learning prototype.', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=240&q=85' },
+].map((student, index) => ({ ...student, rank: index + 1, badges: [], transactions: [] }))
+
+function StudentAvatar({ student, large = false }) {
+  const [imageFailed, setImageFailed] = useState(false)
+
+  return imageFailed || !student.image
+    ? <div className={`student-photo ${large ? 'large' : ''} fallback-photo`} aria-label={`${student.name} initials`}>{initials(student.name)}</div>
+    : <img className={`student-photo ${large ? 'large' : ''}`} src={student.image} alt={`${student.name} profile`} onError={() => setImageFailed(true)} />
+}
+
+function XpBar({ xp }) {
+  const [hasEntered, setHasEntered] = useState(false)
+  const barRef = useRef(null)
+
+  useEffect(() => {
+    const element = barRef.current
+    if (!element) return undefined
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setHasEntered(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.4 })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  return <div className="xp-bar" ref={barRef} aria-label={`${xp} XP progress`}><span style={{ width: hasEntered ? `${Math.min((xp / 1250) * 100, 100)}%` : '0%' }} /></div>
+}
+
 export default function Leaderboard({ records, activities, currentUserId }) {
-  const [tab, setTab] = useState('all')
-  const [search, setSearch] = useState('')
-  const [branch, setBranch] = useState('All Branches')
-  const [period, setPeriod] = useState('All Time')
   const { students, currentStudent } = useMemo(() => buildLeaderboard(records, activities, currentUserId), [records, activities, currentUserId])
-  const branches = useMemo(() => ['All Branches', ...new Set(students.map((student) => student.branch).filter(Boolean))], [students])
-  const visibleStudents = useMemo(() => students.filter((student) => {
-    const matchesSearch = !search.trim() || student.name.toLowerCase().includes(search.trim().toLowerCase()) || student.branch.toLowerCase().includes(search.trim().toLowerCase())
-    const matchesBranch = branch === 'All Branches' || student.branch === branch
-    const matchesTab = tab === 'all' || (tab === 'creative' && student.creative) || (tab === 'technical' && student.hackathons === 0 && student.creative === 0) || (tab === 'hackathons' && student.hackathons) || (tab === 'month' || tab === 'week')
-    return matchesSearch && matchesBranch && matchesTab && (period === 'All Time' || student.transactions.some((transaction) => new Date(transaction.date) >= new Date(Date.now() - (period === 'This Week' ? 7 : 30) * 86400000)))
-  }), [students, search, branch, period, tab])
+  const visibleStudents = students.length > 0 ? students.slice(0, 5) : featuredStudents
   const podium = visibleStudents.slice(0, 3)
   const stats = [[35, 'Events Conducted'], [500, 'Student Registrations'], [100, 'Active Members'], [50, 'Challenges Completed']]
 
@@ -57,17 +79,9 @@ export default function Leaderboard({ records, activities, currentUserId }) {
         <div className="leaderboard-stats">
           {stats.map(([value, label]) => <div className="leaderboard-stat" key={label}><CountUp value={value} /><span>{label}</span></div>)}
         </div>
-        <div className="leaderboard-tabs" role="tablist" aria-label="Leaderboard views">
-          {tabs.map(([label, value]) => <button type="button" role="tab" aria-selected={tab === value} className={tab === value ? 'active' : ''} onClick={() => setTab(value)} key={value}>{label}</button>)}
-        </div>
-        <div className="leaderboard-controls">
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search students..." aria-label="Search students" />
-          <select value={branch} onChange={(event) => setBranch(event.target.value)} aria-label="Filter by branch">{branches.map((item) => <option key={item}>{item}</option>)}</select>
-          <select value={period} onChange={(event) => setPeriod(event.target.value)} aria-label="Filter by time period"><option>All Time</option><option>This Week</option><option>This Month</option><option>This Semester</option></select>
-        </div>
-        {podium.length > 0 && <div className="leaderboard-podium">{podium.map((student, index) => <article className={`podium-card podium-${index + 1}`} key={student.id}><span className="podium-rank">{['🥇', '🥈', '🥉'][index]} #{student.rank}</span><div className="leader-avatar">{initials(student.name)}</div><h3>{student.name}</h3><span>{student.branch}</span><strong>{student.xp.toLocaleString()} XP</strong><div className="badge-list">{student.badges.slice(0, 2).map((badge) => <span title={`${badge.name}: ${badge.reason}`} key={badge.name}>{badge.icon}</span>)}</div></article>)}</div>}
+        {podium.length > 0 && <div className="leaderboard-podium">{podium.map((student, index) => <article className={`podium-card podium-${student.rank}`} key={student.id}><span className="podium-rank">{['🥇', '🥈', '🥉'][index]} #{student.rank}</span>{student.rank === 1 && <span className="podium-crown" aria-hidden="true">♛</span>}<StudentAvatar student={student} large /><h3>{student.name}</h3><span>{student.branch}</span><strong>{student.xp.toLocaleString()} XP</strong><XpBar xp={student.xp} /><span className="podium-achievement">{student.achievementIcon || '🏅'} {student.achievement || student.badges?.[0]?.name || 'Active Member'}</span></article>)}</div>}
         {currentStudent && <div className="my-rank-card"><span>Your current rank</span><strong>#{currentStudent.rank}</strong><div><b>{currentStudent.name}</b><small>{currentStudent.xp.toLocaleString()} XP</small></div><div className="rank-progress"><i style={{ width: `${Math.min((currentStudent.xp % 1000) / 10, 100)}%` }} /></div></div>}
-        <div className="leaderboard-list"><div className="leaderboard-list-heading"><span>Rank / Student</span><span>XP</span></div>{visibleStudents.map((student) => <article className="leader-row" key={student.id}><strong className="row-rank">#{student.rank}</strong><div className="leader-avatar small">{initials(student.name)}</div><div className="leader-identity"><strong>{student.name}</strong><span>{student.branch}</span><div className="badge-list">{student.badges.map((badge) => <span title={`${badge.name}: ${badge.reason}`} key={badge.name}>{badge.icon} {badge.name}</span>)}</div></div><strong className="row-xp">{student.xp.toLocaleString()} XP</strong></article>)}</div>
+        <div className="leaderboard-list"><div className="leaderboard-list-heading"><span>Student details</span><span>XP total</span></div>{visibleStudents.map((student) => <article className={`leader-row rank-${student.rank}`} key={student.id}><strong className="row-rank">#{student.rank}</strong><StudentAvatar student={student} /><div className="leader-identity"><strong>{student.name}</strong><span>{student.branch} · {student.collegeName}</span><p>{student.detail || 'Active member of the Diseño Divino student community.'}</p><div className="student-achievements"><span><b>Achievement</b>{student.achievement ? `${student.achievementIcon} ${student.achievement}` : student.badges?.map((badge) => badge.name).join(' · ') || 'Active participant'}</span><span><b>Events</b>{student.events || 0} participated · {student.wins || 0} won</span><span className="prize-highlight"><b>Prize pool won</b>{student.prizePool || '$0'}</span></div><XpBar xp={student.xp} /></div><strong className="row-xp"><span>XP TOTAL</span>{student.xp.toLocaleString()}</strong></article>)}</div>
         {currentStudent && <div className="achievement-panel"><div><span className="eyebrow">My profile</span><h3>Recent Achievements</h3><p>Earn XP through registrations, attendance, workshops, and hackathons. Rewards are calculated from validated activity records.</p></div><div className="achievement-badges">{BADGES.slice(0, 4).map((badge) => <span title={`${badge.name}: ${badge.reason}`} key={badge.name}>{badge.icon} {badge.name}</span>)}</div></div>}
       </div>
     </section>
